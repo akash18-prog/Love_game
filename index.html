@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fradu ❤️ Kutty Ma</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:'Segoe UI',sans-serif;
+ background:linear-gradient(135deg,#ffdde1,#ee9ca7);
+ min-height:100vh;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ overflow:hidden;
+}
+
+.container{
+ background:white;
+ width:92%;
+ max-width:420px;
+ padding:20px;
+ border-radius:22px;
+ box-shadow:0 20px 40px rgba(0,0,0,.25);
+ text-align:center;
+ position:relative;
+}
+
+h1{color:#e91e63;margin-bottom:10px}
+
+input{
+ width:100%;
+ padding:12px;
+ border-radius:12px;
+ border:1px solid #ccc;
+ margin:10px 0;
+ font-size:16px;
+}
+
+button{
+ width:100%;
+ padding:12px;
+ border:none;
+ border-radius:12px;
+ background:#e91e63;
+ color:white;
+ font-size:16px;
+ cursor:pointer;
+ transition:.3s;
+}
+
+button:hover{opacity:.9}
+
+.options button{
+ background:#f4f4f4;
+ color:#333;
+ border:2px solid #ddd;
+ margin:8px 0;
+}
+
+.correct{background:#4caf50!important;color:#fff!important}
+.wrong{background:#f44336!important;color:#fff!important}
+
+.hide{display:none}
+
+/* Progress Bar */
+.progress{
+ width:100%;
+ height:8px;
+ background:#eee;
+ border-radius:10px;
+ overflow:hidden;
+ margin:10px 0 15px;
+}
+.progress-bar{
+ height:100%;
+ width:0%;
+ background:#e91e63;
+ transition:.5s;
+}
+
+/* Hearts */
+.heart{
+ position:fixed;
+ font-size:24px;
+ animation:float 2s linear forwards;
+}
+@keyframes float{
+ 0%{opacity:1;transform:translateY(0)}
+ 100%{opacity:0;transform:translateY(-120px)}
+}
+
+/* Final Message */
+.final{
+ font-size:18px;
+ color:#e91e63;
+ margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- UNLOCK -->
+<div id="unlock">
+ <h1>🔐 Unlock Game</h1>
+ <input id="name" placeholder="Your Name">
+ <input id="password" type="password" placeholder="Password">
+ <button onclick="unlock()">Enter</button>
+</div>
+
+<!-- GAME -->
+<div id="game" class="hide">
+ <div class="progress"><div class="progress-bar" id="bar"></div></div>
+ <h1 id="question"></h1>
+ <div class="options" id="options"></div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="hide">
+ <h1>🤍 You Did It 🤍</h1>
+ <p class="final">
+ En life-la romba precious person neethan…  
+ idhu game illa, namma bond oda proof 💖
+ </p>
+ <button onclick="share()">Share on WhatsApp</button>
+</div>
+
+</div>
+
+<!-- AUDIO -->
+<audio id="bgMusic" loop>
+ <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8d29fbb4b.mp3">
+</audio>
+<audio id="click" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
+<audio id="correctSound" src="https://www.soundjay.com/buttons/sounds/button-4.mp3"></audio>
+<audio id="wrongSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+
+<script>
+const PASSWORD="kashvee";
+let userName="";
+let current=0;
+
+const questions=[
+{
+q:"Fradu romba happy aagura moment edhu?",
+o:[
+"Sunday leave",
+"Phone full charge",
+"Kutty Ma message varra second 🤍",
+"Night silence"
+],
+a:2
+},
+{
+q:"Fradu ku kovam seekiram pogum eppa?",
+o:[
+"Music",
+"Kutty Ma sorry sonnappo 🫶",
+"Sleep",
+"Time"
+],
+a:1
+},
+{
+q:"Fradu romba miss panra vishayam?",
+o:[
+"Social media",
+"Notifications",
+"Kutty Ma voice 🥹",
+"Time"
+],
+a:2
+},
+{
+q:"Fradu ku success na?",
+o:[
+"Money",
+"Respect",
+"Peace",
+"Kutty Ma smile 💖"
+],
+a:3
+},
+{
+q:"Fradu ku romba pidicha night?",
+o:[
+"Rain",
+"Kutty Ma vum Fradu senthu thoongurathu 🤍",
+"Music",
+"Silence"
+],
+a:1
+},
+{
+q:"Fradu yara romba pidikum?",
+o:[
+"Kutty Ma",
+"Kutty KD",
+"Kutty Fradu",
+"All the above 😏"
+],
+a:0
+}
+];
+
+function unlock(){
+ userName=document.getElementById("name").value.trim();
+ const pw=document.getElementById("password").value;
+ if(!userName){alert("Name enter pannunga");return;}
+ if(pw!==PASSWORD){navigator.vibrate(300);alert("Wrong password 😜");return;}
+ document.getElementById("unlock").classList.add("hide");
+ document.getElementById("game").classList.remove("hide");
+ document.getElementById("bgMusic").volume=0.3;
+ document.getElementById("bgMusic").play();
+ load();
+}
+
+function load(){
+ document.getElementById("question").innerText=questions[current].q;
+ const opt=document.getElementById("options");
+ opt.innerHTML="";
+ questions[current].o.forEach((t,i)=>{
+  const b=document.createElement("button");
+  b.innerText=t;
+  b.onclick=()=>select(b,i);
+  opt.appendChild(b);
+ });
+ document.getElementById("bar").style.width=
+ ((current)/questions.length)*100+"%";
+}
+
+function select(btn,i){
+ document.getElementById("click").play();
+ const ans=questions[current].a;
+ document.querySelectorAll(".options button").forEach(b=>b.disabled=true);
+ if(i===ans){
+  btn.classList.add("correct");
+  document.getElementById("correctSound").play();
+  hearts();
+ }else{
+  btn.classList.add("wrong");
+  document.querySelectorAll(".options button")[ans].classList.add("correct");
+  document.getElementById("wrongSound").play();
+ }
+ setTimeout(()=>{
+  current++;
+  if(current<questions.length){load();}
+  else finish();
+ },1500);
+}
+
+function hearts(){
+ for(let i=0;i<10;i++){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerText="❤️";
+  h.style.left=Math.random()*100+"vw";
+  h.style.bottom="0";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),2000);
+ }
+}
+
+function finish(){
+ document.getElementById("game").classList.add("hide");
+ document.getElementById("result").classList.remove("hide");
+ document.getElementById("bar").style.width="100%";
+}
+
+function share(){
+ const msg=`${userName} just completed our love game 🤍\nFradu ❤️ Kutty Ma forever`;
+ window.open("https://wa.me/?text="+encodeURIComponent(msg));
+}
+</script>
+
+</body>
+</html>
