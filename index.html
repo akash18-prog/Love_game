@@ -10,82 +10,81 @@
 body{
  margin:0;
  font-family:'Segoe UI',sans-serif;
- background:linear-gradient(135deg,#ffdde1,#ee9ca7);
+ background:radial-gradient(circle at top,#2b1055,#000);
  min-height:100vh;
  display:flex;
- align-items:center;
  justify-content:center;
+ align-items:center;
+ color:white;
  overflow:hidden;
 }
 
 .container{
- background:white;
  width:92%;
  max-width:420px;
- padding:20px;
+ background:rgba(255,255,255,0.08);
+ backdrop-filter:blur(12px);
  border-radius:22px;
- box-shadow:0 20px 40px rgba(0,0,0,.25);
+ padding:20px;
+ box-shadow:0 0 40px rgba(255,0,150,.4);
  text-align:center;
- position:relative;
 }
 
-h1{color:#e91e63;margin-bottom:10px}
+h1{color:#ff77aa}
 
 input{
  width:100%;
  padding:12px;
- border-radius:12px;
- border:1px solid #ccc;
  margin:10px 0;
+ border-radius:12px;
+ border:none;
  font-size:16px;
 }
 
 button{
  width:100%;
  padding:12px;
+ border-radius:14px;
  border:none;
- border-radius:12px;
- background:#e91e63;
+ background:#ff4f8b;
  color:white;
  font-size:16px;
  cursor:pointer;
  transition:.3s;
 }
 
-button:hover{opacity:.9}
+button:hover{transform:scale(1.03)}
 
 .options button{
- background:#f4f4f4;
- color:#333;
- border:2px solid #ddd;
+ background:rgba(255,255,255,.15);
  margin:8px 0;
 }
 
-.correct{background:#4caf50!important;color:#fff!important}
-.wrong{background:#f44336!important;color:#fff!important}
+.correct{background:#2ecc71!important}
+.wrong{background:#e74c3c!important}
 
 .hide{display:none}
 
-/* Progress Bar */
+/* Progress */
 .progress{
  width:100%;
  height:8px;
- background:#eee;
+ background:rgba(255,255,255,.2);
  border-radius:10px;
  overflow:hidden;
- margin:10px 0 15px;
+ margin:10px 0;
 }
-.progress-bar{
+.bar{
  height:100%;
  width:0%;
- background:#e91e63;
- transition:.5s;
+ background:#ff77aa;
+ transition:.4s;
 }
 
-/* Hearts */
+/* Heart animation */
 .heart{
  position:fixed;
- font-size:24px;
+ font-size:22px;
  animation:float 2s linear forwards;
 }
 @keyframes float{
@@ -93,11 +92,11 @@ button:hover{opacity:.9}
  100%{opacity:0;transform:translateY(-120px)}
 }
 
-/* Final Message */
-.final{
- font-size:18px;
- color:#e91e63;
- margin-top:10px;
+/* Score */
+.score{
+ font-size:22px;
+ margin:10px 0;
+ color:#ff9ad5;
 }
 </style>
 </head>
@@ -108,7 +107,7 @@ button:hover{opacity:.9}
 
 <!-- UNLOCK -->
 <div id="unlock">
- <h1>🔐 Unlock Game</h1>
+ <h1>🔐 Unlock</h1>
  <input id="name" placeholder="Your Name">
  <input id="password" type="password" placeholder="Password">
  <button onclick="unlock()">Enter</button>
@@ -116,96 +115,94 @@ button:hover{opacity:.9}
 
 <!-- GAME -->
 <div id="game" class="hide">
- <div class="progress"><div class="progress-bar" id="bar"></div></div>
+ <div class="progress"><div class="bar" id="bar"></div></div>
  <h1 id="question"></h1>
  <div class="options" id="options"></div>
 </div>
 
 <!-- RESULT -->
 <div id="result" class="hide">
- <h1>🤍 You Did It 🤍</h1>
- <p class="final">
- En life-la romba precious person neethan…  
- idhu game illa, namma bond oda proof 💖
+ <h1>💖 Scorecard 💖</h1>
+ <div class="score" id="scoreText"></div>
+ <p>
+ Idhu game illa…  
+ namma bond oda proof 🤍  
  </p>
- <button onclick="share()">Share on WhatsApp</button>
+ <button onclick="share()">Share Result</button>
 </div>
 
 </div>
 
 <!-- AUDIO -->
-<audio id="bgMusic" loop>
- <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8d29fbb4b.mp3">
-</audio>
-<audio id="click" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
-<audio id="correctSound" src="https://www.soundjay.com/buttons/sounds/button-4.mp3"></audio>
-<audio id="wrongSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+<audio id="bgMusic" src="bg.mp3" loop></audio>
+<audio id="clickSound" src="click.mp3"></audio>
 
 <script>
 const PASSWORD="kashvee";
-let userName="";
 let current=0;
+let score=0;
+let userName="";
 
 const questions=[
 {
-q:"Fradu romba happy aagura moment edhu?",
-o:[
-"Sunday leave",
-"Phone full charge",
-"Kutty Ma message varra second 🤍",
-"Night silence"
-],
-a:2
+ q:"Fradu romba happy aagura exact moment edhu?",
+ o:[
+  "Free time",
+  "Kutty Ma message varra second 🤍",
+  "Sleep",
+  "Music"
+ ],
+ a:1
 },
 {
-q:"Fradu ku kovam seekiram pogum eppa?",
-o:[
-"Music",
-"Kutty Ma sorry sonnappo 🫶",
-"Sleep",
-"Time"
-],
-a:1
+ q:"Fradu kovam romba seekiram pogum eppo?",
+ o:[
+  "Time pogumbothu",
+  "Kutty Ma siricha podhu 🫶",
+  "Music",
+  "Sleep"
+ ],
+ a:1
 },
 {
-q:"Fradu romba miss panra vishayam?",
-o:[
-"Social media",
-"Notifications",
-"Kutty Ma voice 🥹",
-"Time"
-],
-a:2
+ q:"Fradu romba miss panra vishayam?",
+ o:[
+  "Social media",
+  "Friends",
+  "Kutty Ma voice 🥹",
+  "Food"
+ ],
+ a:2
 },
 {
-q:"Fradu ku success na?",
-o:[
-"Money",
-"Respect",
-"Peace",
-"Kutty Ma smile 💖"
-],
-a:3
+ q:"Fradu ku success na?",
+ o:[
+  "Money",
+  "Respect",
+  "Peace",
+  "Kutty Ma smile 💖"
+ ],
+ a:3
 },
 {
-q:"Fradu ku romba pidicha night?",
-o:[
-"Rain",
-"Kutty Ma vum Fradu senthu thoongurathu 🤍",
-"Music",
-"Silence"
-],
-a:1
+ q:"Perfect night na Fradu ku?",
+ o:[
+  "Rain",
+  "Kutty Ma vum Fradu senthu thoongurathu 🤍",
+  "Music",
+  "Silence"
+ ],
+ a:1
 },
 {
-q:"Fradu yara romba pidikum?",
-o:[
-"Kutty Ma",
-"Kutty KD",
-"Kutty Fradu",
-"All the above 😏"
-],
-a:0
+ q:"Fradu ku yara romba pidikum?",
+ o:[
+  "Kutty Ma",
+  "Kutty KD",
+  "Kutty Fradu",
+  "All the above 😏"
+ ],
+ a:0
 }
 ];
 
@@ -213,10 +210,14 @@ function unlock(){
  userName=document.getElementById("name").value.trim();
  const pw=document.getElementById("password").value;
  if(!userName){alert("Name enter pannunga");return;}
- if(pw!==PASSWORD){navigator.vibrate(300);alert("Wrong password 😜");return;}
+ if(pw!==PASSWORD){
+  navigator.vibrate(300);
+  alert("Wrong password 😜");
+  return;
+ }
  document.getElementById("unlock").classList.add("hide");
  document.getElementById("game").classList.remove("hide");
- document.getElementById("bgMusic").volume=0.3;
+ document.getElementById("bgMusic").volume=0.35;
  document.getElementById("bgMusic").play();
  load();
 }
@@ -225,9 +226,9 @@ function load(){
  document.getElementById("question").innerText=questions[current].q;
  const opt=document.getElementById("options");
  opt.innerHTML="";
- questions[current].o.forEach((t,i)=>{
+ questions[current].o.forEach((text,i)=>{
   const b=document.createElement("button");
-  b.innerText=t;
+  b.innerText=text;
   b.onclick=()=>select(b,i);
   opt.appendChild(b);
  });
@@ -236,27 +237,25 @@ function load(){
 }
 
 function select(btn,i){
- document.getElementById("click").play();
+ document.getElementById("clickSound").play();
  const ans=questions[current].a;
  document.querySelectorAll(".options button").forEach(b=>b.disabled=true);
  if(i===ans){
   btn.classList.add("correct");
-  document.getElementById("correctSound").play();
+  score++;
   hearts();
  }else{
   btn.classList.add("wrong");
   document.querySelectorAll(".options button")[ans].classList.add("correct");
-  document.getElementById("wrongSound").play();
  }
  setTimeout(()=>{
   current++;
-  if(current<questions.length){load();}
-  else finish();
- },1500);
+  current<questions.length ? load() : finish();
+ },1200);
 }
 
 function hearts(){
- for(let i=0;i<10;i++){
+ for(let i=0;i<8;i++){
   const h=document.createElement("div");
   h.className="heart";
   h.innerText="❤️";
@@ -271,10 +270,12 @@ function finish(){
  document.getElementById("game").classList.add("hide");
  document.getElementById("result").classList.remove("hide");
  document.getElementById("bar").style.width="100%";
+ document.getElementById("scoreText").innerText=
+ `${score} / ${questions.length}`;
 }
 
 function share(){
- const msg=`${userName} just completed our love game 🤍\nFradu ❤️ Kutty Ma forever`;
+ const msg=`${userName} scored ${score}/${questions.length} 💖\nFradu ❤️ Kutty Ma`;
  window.open("https://wa.me/?text="+encodeURIComponent(msg));
 }
 </script>
